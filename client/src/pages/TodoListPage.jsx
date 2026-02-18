@@ -327,32 +327,19 @@ const TodoListPage = () => {
             task.task_id === id ? { ...task, is_completed: newStatus } : task,
           ),
         );
-      }
-      setSummary((prev) => {
-        const taskTime = taskToUpdate.focus_time_spent || 0;
-        // ถ้าติ๊กเสร็จ (0->1) เวลาที่เหลือต้องลดลง | ถ้ากดยกเลิก (1->0) เวลาที่เหลือต้องเพิ่มขึ้น
-        const timeAdjustment = newStatus === 1 ? -taskTime : taskTime;
 
-        return {
-          ...prev,
-          tasks: {
-            ...prev.tasks,
-            completed:
-              newStatus === 1
-                ? prev.tasks.completed + 1
-                : prev.tasks.completed - 1,
+        const sumRes = await fetch(
+          `http://localhost:5050/api/tasks/summary?date=${formattedDate}`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
           },
-          time: {
-            ...prev.time,
-            // อัปเดตค่า time_remaining ใน state ทันที
-            time_remaining: Math.max(
-              0,
-              (prev.time.time_remaining ?? prev.time.total_planned) +
-                timeAdjustment,
-            ),
-          },
-        };
-      });
+        );
+        if (sumRes.ok) {
+          const sumData = await sumRes.json();
+          setSummary(sumData.summary);
+        }
+      }
+      
     } catch (error) {
       console.error("Update error:", error);
     }

@@ -1,25 +1,48 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 
-const TaskSection = () => {
+const TaskSection = ({ todoList, fetchTasks, onSelectTask, selectedTaskId }) => {
   const [activeTab, setActiveTab] = useState("new");
   const [task, setTask] = useState("");
   const [category, setCategory] = useState("Work"); // เก็บหมวดหมู่ที่เลือก
-  
-  // 1. เพิ่ม State สำหรับเก็บรายการงานทั้งหมด (ใส่ตัวอย่างไว้ 1 อัน)
-  const [todoList, setTodoList] = useState([]);
 
-  // 2. ฟังก์ชันสำหรับเพิ่มงานเมื่อกด Enter
-  const handleKeyDown = (e) => {
+  const token = localStorage.getItem('token');
+
+  const today = new Date().toLocaleDateString('en-CA', {timeZone: 'Asia/Bangkok'});
+
+  const handleKeyDown = async (e) => {
     if (e.key === "Enter" && task.trim() !== "") {
-      const newTask = {
-        id: Date.now(),
-        text: task,
-        cat: category,
-        completed: false
-      };
-      setTodoList([newTask, ...todoList]); // เพิ่มงานใหม่ไว้บนสุด
-      setTask(""); // ล้างช่อง input
-      setActiveTab("list"); // สลับไปหน้า list อัตโนมัติเพื่อให้เห็นงานที่เพิ่ม
+      try {
+        await axios.post('http://localhost:3000/api/tasks', {
+          title: task,
+          task_type: "NORMAL", // หรือตามที่คุณกำหนด
+          date: today,
+          focus_time_spent: 25, // ค่าเริ่มต้น (เช่น 25 นาที)
+          category_id: null // หรือหา ID จากหมวดหมู่ที่เลือก
+        }, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        
+        setTask("");
+        if (fetchTasks) fetchTasks(); // โหลด List ใหม่หลังจากเพิ่มสำเร็จ
+        setActiveTab("list");
+      } catch (error) {
+        console.error("Error creating task:", error);
+      }
+    }
+  };
+
+  // ฟังก์ชันสลับสถานะ 완료 (Complete)
+  const toggleComplete = async (id, currentStatus) => {
+    try {
+      await axios.patch(`http://localhost:3000/api/tasks/${id}/status`, {
+        is_completed: currentStatus === 1 ? 0 : 1
+      }, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      fetchTasks();
+    } catch (error) {
+      console.error("Error updating status:", error);
     }
   };
 
@@ -66,15 +89,29 @@ const TaskSection = () => {
       ) : (
         /* 3. ส่วนแสดงลิสต์งาน (Loop ข้อมูลจาก todoList) */
         <div className="flex-1 overflow-y-auto space-y-3 pr-2 custom-scrollbar">
-          {todoList.length > 0 ? (
-            todoList.map((item) => (
-              <div key={item.id} className="flex items-center p-4 bg-slate-50 rounded-2xl border border-slate-100 hover:border-indigo-100 transition-all group">
-                <div className="w-5 h-5 rounded-md border-2 border-slate-200 mr-3 flex items-center justify-center group-hover:border-indigo-400 transition-colors cursor-pointer bg-white">
-                  {/* ปุ่มติ๊กถูก (Optional) */}
+          {todoList && todoList.length > 0 ? (
+            todoList
+            .filter((item) => item.is_completed === 0)
+            .map((item, index) => (
+              <div 
+                  key={item.task_id || `task-${index}`} 
+                  onClick={() => onSelectTask(item)} // คลิกทั้งแถบเพื่อเลือกงาน
+                  className={`flex items-center p-4 rounded-2xl border transition-all cursor-pointer group 
+                    ${selectedTaskId === item.task_id 
+                      ? 'bg-indigo-50 border-indigo-200 ring-2 ring-indigo-100' // สไตล์เมื่อถูกเลือก
+                      : 'bg-white border-slate-100 hover:border-indigo-100'}`}
+                >
+                <div className={`w-5 h-5 rounded-full border-2 mr-3 flex items-center justify-center transition-all
+                    ${selectedTaskId === item.task_id ? 'border-indigo-500 bg-indigo-500' : 'border-slate-200'}`}>
+                    {selectedTaskId === item.task_id && <div className="w-2 h-2 bg-white rounded-full"></div>}
                 </div>
                 <div className="flex flex-col">
-                  <span className="text-sm font-bold text-slate-600">{item.text}</span>
-                  <span className="text-[9px] font-black text-indigo-300 uppercase tracking-widest">{item.cat}</span>
+                  <span className={`text-sm font-bold ${item.is_completed ? 'text-slate-400 line-through' : 'text-slate-600'}`}>
+                    {item.title} 
+                  </span>
+                  <span className="text-[9px] font-black text-indigo-300 uppercase tracking-widest">
+                    {item.category_name || "General"}
+                  </span>
                 </div>
               </div>
             ))
@@ -82,6 +119,11 @@ const TaskSection = () => {
             <div className="h-full flex items-center justify-center">
               <p className="text-center text-slate-300 italic text-sm">Your list is empty</p>
             </div>
+          )}
+          {todoList && todoList.length > 0 && todoList.filter(i => !i.is_completed).length === 0 && (
+             <div className="h-full flex items-center justify-center">
+               <p className="text-center text-slate-300 italic text-sm">All tasks completed!</p>
+             </div>
           )}
         </div>
       )}

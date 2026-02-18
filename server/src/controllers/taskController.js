@@ -117,7 +117,7 @@ exports.getTaskSummary = async (req, res) => {
                 COUNT(*) as total_tasks,
                 SUM(CASE WHEN is_completed = 1 THEN 1 ELSE 0 END) as completed_tasks,
                 IFNULL(SUM(focus_time_spent), 0) as total_planned_time,
-                IFNULL(SUM(CASE WHEN is_completed = 1 THEN focus_time_spent ELSE 0 END), 0) as total_time_finished
+                IFNULL(SUM(CASE WHEN is_completed = 0 THEN focus_time_spent ELSE 0 END), 0) as remaining_planned_time
             FROM tasks
             WHERE user_id = ? AND DATE(created_at) = ?
         `;
@@ -132,8 +132,8 @@ exports.getTaskSummary = async (req, res) => {
         const [[logStats]] = await db.promise().execute(logQuery, [userId, targetDate]);
 
         const totalPlanned = parseInt(taskStats.total_planned_time);
-        const timeFinished = parseInt(taskStats.total_time_finished); // เวลาจาก task ที่ติ๊กถูก
-        const totalActualSpent = parseInt(logStats.total_actual_spent); // เวลาจากนาฬิกาจับเวลา (ถ้ามี)
+        const remainingPlanned = parseInt(taskStats.remaining_planned_time);
+        const totalActualSpent = parseInt(logStats.total_actual_spent);
 
         res.status(200).json({
             summary: {
@@ -143,8 +143,8 @@ exports.getTaskSummary = async (req, res) => {
                 },
                 time: {
                     total_planned: totalPlanned,
-                    total_actual_spent: totalActualSpent,
-                    time_remaining: Math.max(0, totalPlanned - timeFinished - totalActualSpent)
+                    total_actual_spent: totalActualSpent, // เวลาสะสมที่กด Start/Finish จากหน้า Timer
+                    time_remaining: remainingPlanned      //
                 }
             }
         });

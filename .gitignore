@@ -1,5 +1,16 @@
+# ข้ามโฟลเดอร์ Library ทั้งหมด (ไม่ว่าจะอยู่ชั้นไหน)
 node_modules/
+**/node_modules/
+
+# ข้ามไฟล์ความลับ (ไม่ว่าจะอยู่ชั้นไหน)
 .env
+**/.env
+
+# ข้ามโฟลเดอร์ Build ของ React/Vite
 dist/
+**/dist/
 build/
+**/build/
+
+# ข้ามไฟล์ขยะของระบบ
 .DS_Store
