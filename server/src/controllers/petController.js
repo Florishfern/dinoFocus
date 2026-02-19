@@ -92,14 +92,14 @@ exports.gachaRoll = async (req, res) => {
             actionStatus = "Level Up!";
         }else{
             await db.promise().execute(
-                `INSERT INTO pets (user_id, dino_id, level, exp, is_active) VALUES VALUES (?, ?, 1, 0, 0)`,
+                `INSERT INTO pets (user_id, dino_id, level, exp, is_active) VALUES (?, ?, 1, 0, 0)`,
                 [userId, newDinoId]
             );
             actionStatus = "New Dino!";
         }
 
         const [updateUser] = await db.promise().execute(
-            `SELECT total_coins FROM users WHERE user_id`,
+            `SELECT total_coins FROM users WHERE user_id = ?`,
             [userId]
         );
 
@@ -162,4 +162,3 @@ exports.getActivePet = async (req, res) => {
         });
     }
 };
-
