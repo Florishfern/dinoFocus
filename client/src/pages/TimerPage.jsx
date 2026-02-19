@@ -8,20 +8,37 @@ import axios from "axios";
 const TimerPage = () => {
   const [activeDino, setActiveDino] = useState(null);
   const [selectedTask, setSelectedTask] = useState(null);
-  
-  // 1. เพิ่ม State สำหรับเก็บงาน (จุดที่ขาดไป)
-  const [tasks, setTasks] = useState([]); 
+  const [categories, setCategories] = useState([]);
 
-  const token = localStorage.getItem('token');
-  const today = new Date().toLocaleDateString('en-CA', {timeZone: 'Asia/Bangkok'});
+  // 1. เพิ่ม State สำหรับเก็บงาน (จุดที่ขาดไป)
+  const [tasks, setTasks] = useState([]);
+
+  const token = localStorage.getItem("token");
+  const today = new Date().toLocaleDateString("en-CA", {
+    timeZone: "Asia/Bangkok",
+  });
+
+  const fetchCategories = async () => {
+    try {
+      const response = await axios.get("http://localhost:5050/api/categories", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setCategories(response.data); // เก็บข้อมูล Array ของหมวดหมู่
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+    }
+  };
 
   const fetchTasks = async () => {
     try {
       if (!token) return;
-      const response = await axios.get(`http://localhost:3000/api/tasks?date=${today}`, {
-        headers: { Authorization: `Bearer ${token.trim()}` }
-      });
-      setTasks(response.data.tasks || []); 
+      const response = await axios.get(
+        `http://localhost:5050/api/tasks?date=${today}`,
+        {
+          headers: { Authorization: `Bearer ${token.trim()}` },
+        },
+      );
+      setTasks(response.data.tasks || []);
     } catch (error) {
       console.error("Error fetching tasks:", error);
     }
@@ -31,10 +48,13 @@ const TimerPage = () => {
     const fetchActivePet = async () => {
       try {
         if (!token) return;
-        const response = await axios.get('http://localhost:3000/api/pets/active', {
-          headers: { Authorization: `Bearer ${token.trim()}` }
-        });
-        
+        const response = await axios.get(
+          "http://localhost:5050/api/pets/active",
+          {
+            headers: { Authorization: `Bearer ${token.trim()}` },
+          },
+        );
+
         if (response.data && response.data.data) {
           setActiveDino(response.data.data);
         } else {
@@ -47,6 +67,7 @@ const TimerPage = () => {
 
     fetchActivePet();
     fetchTasks(); // 2. สั่งให้โหลดงานตอนเปิดหน้า (จุดที่ขาดไป)
+    fetchCategories();
   }, []);
 
   return (
@@ -54,25 +75,28 @@ const TimerPage = () => {
       <Navbar />
       <main className="max-w-[1250px] mx-auto mt-5 px-8">
         <div className="grid grid-cols-12 gap-8 items-center">
-          
           {/* 3. ส่ง Props ไปให้ลูกๆ (จุดที่ขาดไป) */}
-          <TaskSection 
+          <TaskSection
             todoList={tasks} // ส่งรายการงาน
+            categories={categories}
             fetchTasks={fetchTasks} // ส่งฟังก์ชันไปให้ลูกใช้รีเฟรช
-            onSelectTask={setSelectedTask} 
+            onSelectTask={(task) => {
+              console.log("TimerPage received task:", task); // เช็คว่าตัวแม่ได้รับงานไหม
+              setSelectedTask(task);
+            }}
             selectedTaskId={selectedTask?.task_id}
           />
-          
-          <DinoSection dino={activeDino}/>
 
-          <TimerSection 
+          <DinoSection dino={activeDino} />
+
+          <TimerSection
+            key={selectedTask?.task_id || 'no-task'}
             activeTask={selectedTask}
-            onTaskFinished={() => {
-              fetchTasks(); // เมื่อจับเวลาจบ ให้ดึงงานใหม่ งานที่เสร็จจะหายไปเอง
-              setSelectedTask(null); // ล้างค่าที่เลือกไว้
+            onTaskFinished={async () => {
+              await fetchTasks(); // รอให้ดึงข้อมูลใหม่เสร็จก่อน
+              setSelectedTask(null); // แล้วค่อยล้างค่า Task ที่เลือกไว้
             }}
           />
-          
         </div>
       </main>
     </div>

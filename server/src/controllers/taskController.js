@@ -4,7 +4,7 @@ const db = require('../config/db');
 
 exports.createTask = async (req, res) => {
     try {
-        const {title, category_id, task_type, focus_time_spent, method_333, date} = req.body;
+        const {title, category_id, task_type, focus_time_spent, method_333, date, position} = req.body;
         const userId = req.user.id;
 
         const taskDate = date ? `${date} 00:00:00` : new Date().toISOString().slice(0, 19).replace('T', ' ');
@@ -14,9 +14,9 @@ exports.createTask = async (req, res) => {
         }
 
         const [result] = await db.promise().execute(
-            `INSERT INTO tasks (user_id, category_id, title, task_type, focus_time_spent, method_333, created_at)
-            VALUES (?, ?, ?, ?, ?, ?, ?)`,
-            [userId, category_id || null, title, task_type, focus_time_spent, method_333 || null, taskDate]
+            `INSERT INTO tasks (user_id, category_id, title, task_type, focus_time_spent, method_333, created_at, position)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+            [userId, category_id || null, title, task_type, focus_time_spent, method_333 || null, taskDate, position || 0]
         );
         res.status(201).json({
             message: "Task created successfully",
@@ -73,8 +73,10 @@ exports.updateTaskStatus =  async (req, res) => {
         const userId = req.user.id;
     
         const [result] = await db.promise().execute(
-            'UPDATE tasks SET is_completed = ? WHERE task_id = ? AND user_id = ?',
-            [is_completed, id, userId]
+            `UPDATE tasks 
+             SET is_completed = ? 
+             WHERE task_id = ? AND user_id = ?`,
+            [is_completed ? 1 : 0, id, userId]
         );
     
         if(result.affectedRows === 0){

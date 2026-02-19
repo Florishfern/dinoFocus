@@ -270,6 +270,11 @@ const TodoListPage = () => {
       if (importantCount < 3) autoMethod = "IMPORTANT";
       else if (secondaryCount < 3) autoMethod = "SECONDARY";
 
+      const minPosition = tasks.length > 0 
+      ? Math.min(...tasks.map(t => t.position || 0)) 
+      : 0;
+      const newPosition = minPosition - 1;
+
       const dataToSend = {
         title: taskData.title,
         category_id: finalCategoryId,
@@ -278,6 +283,7 @@ const TodoListPage = () => {
         task_type: mode === "3-3-3" ? "METHOD_333" : "NORMAL",
         method_333: autoMethod,
         date: formattedDate,
+        position: newPosition
       };
 
       const response = await fetch("http://localhost:5050/api/tasks", {
@@ -297,7 +303,9 @@ const TodoListPage = () => {
           category_name: finalCatName,
           category_color: finalColor,
         };
-        setTasks((prev) => [newTask, ...prev]);
+        setTasks((prev) => 
+        [newTask, ...prev].sort((a, b) => (a.position || 0) - (b.position || 0))
+        );
       }
     } catch (error) {
       console.error("Error adding task:", error);

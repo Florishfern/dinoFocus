@@ -30,42 +30,45 @@ const TimerSection = ({ activeTask, onTaskFinished }) => {
 
   const handleTimerComplete = async () => {
     setIsRunning(false);
-    alert("Focus session finished!");
 
-    if (activeTask) {
-      try {
-        const token = localStorage.getItem("token");
-        const secondsSpent = initialTime - timeLeft;
-        const actualMinutes = Math.max(1, Math.round(secondsSpent / 60));
+    console.log("Check activeTask before send:", activeTask);
 
-        const payload = {
-          task_id: activeTask.task_id,
-          planned_minutes: activeTask.focus_time_spent,
-          actual_minutes: actualMinutes, // หรือจะส่งตามเวลาที่เดินจริง
-          category_id: activeTask.category_id,
-        };
+    const currentTask = activeTask; 
+    console.log("Check CURRENT task before send:", currentTask);
 
-        const response = await axios.post(
-          "http://localhost:3000/api/focus",
-          payload,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          },
-        );
+    const secondsSpent = initialTime - timeLeft;
+    const actualMinutes = Math.max(1, Math.round(secondsSpent / 60));
 
-        if (response.data.success) {
-          alert(
-            `Saved! You spent ${actualMinutes} mins focus on "${activeTask.title}"`,
-          );
-          // แจ้งไฟล์แม่ให้โหลด Task ใหม่ (งานที่เสร็จจะได้หายไป)
-          if (onTaskFinished) onTaskFinished();
-        }
-        // เพิ่มเติม: อาจจะเรียก callback เพื่อ refresh ข้อมูลหน้าหลัก
-      } catch (error) {
-        console.error("Error saving focus session:", error);
+    try {
+      const token = localStorage.getItem("token");
+
+      const payload = {
+        // ดึงจาก currentTask ที่ส่งมาจากตัวแม่
+        task_id: currentTask?.task_id || null, 
+        new_task_title: currentTask?.title || "Quick Focus",
+        planned_minutes: currentTask?.focus_time_spent || Math.round(initialTime / 60),
+        actual_minutes: actualMinutes,
+        category_id: currentTask?.category_id || null,
+      };
+
+      console.log("DEBUG: Payload being sent:", payload);
+
+      const response = await axios.post(
+        "http://localhost:5050/api/focus",
+        payload,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      );
+
+      if (response.data.success) {
+        alert(`Finished! You earned ${response.data.data.earned_coins} coins.`);
+        if (onTaskFinished) onTaskFinished();
       }
-    } else {
-      alert("Focus session finished!");
+      // เพิ่มเติม: อาจจะเรียก callback เพื่อ refresh ข้อมูลหน้าหลัก
+    } catch (error) {
+      console.error("Error saving focus session:", error);
+      alert("Error saving session");
     }
   };
 
@@ -77,14 +80,26 @@ const TimerSection = ({ activeTask, onTaskFinished }) => {
       }
     } else {
       // ถ้ายังไม่รัน ให้เริ่ม Start
-      if (!activeTask) {
+      
         // กรณีไม่ได้เลือก Task แต่จะกด Start (ใช้เวลาจาก input)
         const [m, s] = inputValue.split(":").map(Number);
         const totalSeconds = (m || 0) * 60 + (s || 0);
-        setTimeLeft(totalSeconds);
-        setInitialTime(totalSeconds);
-      }
-      setIsRunning(true);
+        if (totalSeconds > 0) {
+          setTimeLeft(totalSeconds);
+          setInitialTime(totalSeconds);
+          setIsRunning(true);
+        } else {
+          alert("Please enter a valid time");
+        }
+      
+    }
+  };
+
+  const handleInputChange = (e) => {
+    const val = e.target.value;
+    // อนุญาตให้พิมพ์แค่ตัวเลขและเครื่องหมาย :
+    if (/^[0-9:]*$/.test(val)) {
+      setInputValue(val);
     }
   };
 
