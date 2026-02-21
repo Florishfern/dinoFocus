@@ -32,25 +32,25 @@ exports.createTask = async (req, res) => {
 };
 
 exports.getTasks = async (req, res) => {
-    try{
+    try {
         const userId = req.user.id;
-
         let targetDate = req.query.date;
 
         if(!targetDate){
             targetDate = new Date().toLocaleDateString('en-CA', {timeZone: 'Asia/Bangkok'})
         }
 
-        // ใน taskController.js
         const query = `
             SELECT t.*, c.name AS category_name, c.color_code AS category_color
             FROM tasks t
             LEFT JOIN categories c ON t.category_id = c.category_id
-            WHERE t.user_id = ? AND DATE(t.created_at) = ?
+            WHERE t.user_id = ? 
+              AND DATE(t.created_at) = ?   -- เอาแค่วันที่เลือกเท่านั้น
+              AND t.is_completed IN (0,1,2)       -- เอาแค่งานที่ยังไม่เสร็จเท่านั้น
             ORDER BY 
-                t.task_type = 'METHOD_333' DESC, -- ให้กลุ่ม 3-3-3 ขึ้นก่อน (ถ้ามี)
-                t.position ASC,                 -- เรียงตามลำดับที่ลากวางไว้
-                t.created_at ASC                -- ถ้า position เท่ากัน ให้เรียงตามเวลาที่สร้าง
+                t.is_completed ASC,        -- งานที่ยังไม่เสร็จขึ้นก่อน
+                t.task_type = 'METHOD_333' DESC,
+                t.position ASC
         `;
 
         const [rows] = await db.promise().execute(query, [userId, targetDate]);
@@ -60,7 +60,6 @@ exports.getTasks = async (req, res) => {
             total: rows.length,
             tasks: rows
         });
-
     } catch(err){
         res.status(500).json({message: "Error fetching tasks", error: err.message});
     }

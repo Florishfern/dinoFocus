@@ -75,29 +75,48 @@ exports.processFocusEnd = async (req, res) => {
         ]);
     }
 
+    const taskStatus = isCompletedFullTime ? 1 : 2;
+
     if (!task_id && new_task_title) {
       const [newTask] = await db.promise().execute(
         `INSERT INTO tasks (user_id, title, category_id, focus_time_spent, is_completed, created_at)
-        VALUES (?, ?, ?, ?, 1, NOW())`,
-        [userId, new_task_title, finalCategoryId || null, planned_minutes],
+        VALUES (?, ?, ?, ?, ?, NOW())`,
+        [userId, new_task_title, finalCategoryId || null, planned_minutes, taskStatus],
       );
       finalTaskId = newTask.insertId;
     } else if (task_id) {
-        console.log("Updating existing task:", task_id, "with category:", finalCategoryId); // เพิ่ม log ดูค่า
-        await db.promise().execute(
-            `UPDATE tasks 
-            SET is_completed = 1, 
+      console.log(
+        "Updating existing task:",
+        task_id,
+        "with category:",
+        finalCategoryId,
+      ); // เพิ่ม log ดูค่า
+      await db.promise().execute(
+        `UPDATE tasks 
+            SET is_completed = ?, 
                 category_id = IFNULL(?, category_id) 
             WHERE task_id = ? AND user_id = ?`,
-            [finalCategoryId, task_id, userId]
-        );
+        [ taskStatus, finalCategoryId, task_id, userId],
+      );
     }
 
     await db.promise().execute(
       `INSERT INTO focus_logs (user_id, task_id, duration_minutes, start_time, end_time, is_completed)
-            VALUES (?, ?, ?, NOW() - INTERVAL ? MINUTE, NOW(), 1)`,
-      [userId, finalTaskId, actual_minutes, actual_minutes],
+            VALUES (?, ?, ?, NOW() - INTERVAL ? MINUTE, NOW(), ?)`,
+      [userId, finalTaskId, actual_minutes, actual_minutes, taskStatus === 1 ? 1 : 0],
     );
+
+    const updateStreakQuery = `
+        UPDATE users 
+        SET consecutive_days = CASE 
+            WHEN last_task_date = CURRENT_DATE - INTERVAL 1 DAY THEN consecutive_days + 1
+            WHEN last_task_date = CURRENT_DATE THEN consecutive_days
+            ELSE 1 
+        END,
+        last_task_date = CURRENT_DATE
+        WHERE user_id = ?
+    `;
+    await db.promise().execute(updateStreakQuery, [userId]);
 
     await db.promise().execute(
       `UPDATE users SET

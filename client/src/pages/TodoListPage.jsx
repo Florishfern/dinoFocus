@@ -357,7 +357,7 @@ const TodoListPage = () => {
     .filter((t) => t.is_completed === 0 || !t.is_completed)
     .sort((a, b) => (a.position || 0) - (b.position || 0));
 
-  const completedTasks = tasks.filter((t) => t.is_completed === 1);
+  const completedTasks = tasks.filter((t) => t.is_completed === 1 || t.is_completed === 2);
 
   return (
     <div className="min-h-screen bg-[#F0F2F5] pb-10">

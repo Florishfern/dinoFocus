@@ -26,9 +26,13 @@ const TaskItem = ({ task, onToggle, isCompletedView = false, highlight = false }
           className="w-4 h-4 rounded border-slate-300 accent-indigo-600 cursor-pointer" 
         />
         <div className="flex flex-col">
-          <span className={`text-sm font-bold text-slate-700 ${task.is_completed === 1 ? 'line-through opacity-50' : ''}`}>
-            {task.title}
-          </span>
+          <span className={`text-sm font-bold ${
+  task.is_completed === 1 ? 'line-through text-slate-400' : 
+  task.is_completed === 2 ? 'line-through text-red-400 opacity-70' : // ถ้า Fail ให้เป็นสีแดงจางๆ
+  'text-slate-700'
+}`}>
+  {task.title} {task.is_completed === 2 && '⚠️'} 
+</span>
           {/* เพิ่มจุดสีเล็กๆ หน้าชื่อหมวดหมู่เพื่อความชัดเจน */}
           <div className="flex items-center gap-1.5 mt-0.5">
             <div className="w-2 h-2 rounded-full" style={{ backgroundColor: categoryColor }}></div>
