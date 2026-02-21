@@ -82,12 +82,11 @@ exports.getUserProfile = async (req, res) => {
 
     // 2. Fail (นับจาก tasks)
     const [taskFail] = await db.promise().execute(
-      `SELECT COUNT(*) as count FROM tasks 
-     WHERE user_id = ? AND is_completed = 2 
-     AND MONTH(created_at) = MONTH(CURRENT_DATE())`,
-      [userId],
-    );
-
+    `SELECT COUNT(*) as count FROM tasks 
+     WHERE user_id = ? AND is_completed = 2
+     AND MONTH(created_at) = MONTH(CURRENT_DATE())`, // เปลี่ยนจาก start_time เป็น created_at
+    [userId]
+);
     // 3. Time (รวมเวลาจาก focus_logs) - อันนี้ใช้ start_time ได้เพราะถูกตาราง
     const [focusTime] = await db.promise().execute(
       `SELECT SUM(duration_minutes) as total_minutes FROM focus_logs 
