@@ -31,10 +31,7 @@ const TimerSection = ({ activeTask, onTaskFinished }) => {
   const handleTimerComplete = async () => {
     setIsRunning(false);
 
-    console.log("Check activeTask before send:", activeTask);
-
-    const currentTask = activeTask; 
-    console.log("Check CURRENT task before send:", currentTask);
+    const currentTask = activeTask;
 
     const secondsSpent = initialTime - timeLeft;
     const actualMinutes = Math.max(1, Math.round(secondsSpent / 60));
@@ -51,8 +48,6 @@ const TimerSection = ({ activeTask, onTaskFinished }) => {
         category_id: currentTask?.category_id || null,
       };
 
-      console.log("DEBUG: Payload being sent:", payload);
-
       const response = await axios.post(
         "http://localhost:5050/api/focus",
         payload,
@@ -62,10 +57,12 @@ const TimerSection = ({ activeTask, onTaskFinished }) => {
       );
 
       if (response.data.success) {
-        alert(`Finished! You earned ${response.data.data.earned_coins} coins.`);
-        if (onTaskFinished) onTaskFinished();
+        window.dispatchEvent(new Event("balanceUpdated"));
+
+        if (onTaskFinished) {
+          onTaskFinished(response.data.data); 
+        }
       }
-      // เพิ่มเติม: อาจจะเรียก callback เพื่อ refresh ข้อมูลหน้าหลัก
     } catch (error) {
       console.error("Error saving focus session:", error);
       alert("Error saving session");

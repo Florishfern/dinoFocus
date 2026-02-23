@@ -92,9 +92,16 @@ const TimerPage = () => {
           <TimerSection
             key={selectedTask?.task_id || 'no-task'}
             activeTask={selectedTask}
-            onTaskFinished={async () => {
-              await fetchTasks(); // รอให้ดึงข้อมูลใหม่เสร็จก่อน
-              setSelectedTask(null); // แล้วค่อยล้างค่า Task ที่เลือกไว้
+            onTaskFinished={(data) => {
+              fetchTasks(); 
+              if (data?.pets_stats) {
+                setActiveDino(prev => ({
+                  ...prev,
+                  level: data.pets_stats.level,
+                  exp: data.pets_stats.total_exp 
+                }));
+              }
+              setSelectedTask(null);
             }}
           />
         </div>

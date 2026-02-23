@@ -17,8 +17,8 @@ const calculateRandomReward = (isCompletedFullTime) => {
         if(chance > 0.4) return {type: 'FOOD', amount: 100};
         return {type: 'FOOD', amount: 50};
     } else{
-        if(chance > 0.8) return {type: 'COINS', amount: 1250};
-        if(chance > 0.4) return {type: 'COINS', amount: 1000}
+        if(chance > 0.8) return {type: 'COINS', amount: 125};
+        if(chance > 0.4) return {type: 'COINS', amount: 100}
         return {type: 'COINS', amount: 50};
     } 
 };

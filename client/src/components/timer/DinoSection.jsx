@@ -12,7 +12,7 @@ const DinoSection = ({ dino }) => {
   // *** ต้องประกาศตัวแปรนี้ก่อนที่จะนำไปใช้ใน imagePath ***
 
   // 4. รวมร่างเป็น Path ที่ถูกต้อง
-  const imagePath = dino?.image_url || "/characters/common/Grape_Greet.png";
+  const imagePath = dino?.image_url || "/characters/epic/Grape_Greet.png";
 
   console.log("Dino Image Path จาก DB:", imagePath);
 

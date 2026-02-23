@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom"; // เพิ่ม useNavigate
 import Coin from "./Coin";
 
@@ -6,6 +6,30 @@ import Coin from "./Coin";
 const Navbar = ({ showCoins = true, showSignIn = false }) => {
   const location = useLocation();
   const navigate = useNavigate(); // สำหรับปุ่ม Sign in
+
+  const [balance, setBalance] = useState(0);
+  const token = localStorage.getItem("token");
+
+  useEffect(() => {
+    const fetchBalance = async () => {
+      if (!token || !showCoins) return;
+      try {
+        const response = await fetch("http://localhost:5050/api/users/balance", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const result = await response.json();
+        if (result.success) {
+          setBalance(result.data.coins); // เก็บค่า coins ลงใน state
+        }
+      } catch (err) {
+        console.error("Failed to fetch balance:", err);
+      }
+    };
+    fetchBalance();
+
+    window.addEventListener("balanceUpdated", fetchBalance); // ดักฟัง Event
+    return () => window.removeEventListener("balanceUpdated", fetchBalance);
+  }, [token, showCoins]);
 
   const isActive = (path) =>
     location.pathname === path
@@ -43,7 +67,7 @@ const Navbar = ({ showCoins = true, showSignIn = false }) => {
       {/* 3. ส่วนด้านขวา (Coin หรือ Sign in) */}
       <div className="flex items-center gap-4">
         {/* แสดงเหรียญเฉพาะเมื่อ showCoins เป็น true */}
-        {showCoins && <Coin amount={600} />}
+        {showCoins && <Coin amount={balance} />}
 
         {/* แสดงปุ่ม Sign in เฉพาะเมื่อ showSignIn เป็น true */}
         {showSignIn && (
