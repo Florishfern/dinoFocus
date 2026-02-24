@@ -10,5 +10,6 @@ router.delete('/decline-friend/:requestId', authMiddleware, friendController.dec
 router.get('/requests', authMiddleware, friendController.getFriendRequests);
 router.get('/list', authMiddleware, friendController.getFriendList);
 router.get('/leaderboard', authMiddleware, friendController.getGlobalTopFocus);
+router.get('/profile/:userId', authMiddleware, friendController.getUserProfile);
 
 module.exports = router;

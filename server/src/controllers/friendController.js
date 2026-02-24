@@ -148,3 +148,52 @@ exports.getGlobalTopFocus = async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 };
+
+// friendController.js
+exports.getUserProfile = async (req, res) => {
+    try {
+        const { userId } = req.params;
+
+        // 1. ดึงข้อมูลพื้นฐานจากตาราง users
+        const [user] = await db.promise().execute(
+            `SELECT user_id, username, bio, major, profile_image, consecutive_days 
+             FROM users WHERE user_id = ?`, [userId]
+        );
+
+        if (user.length === 0) return res.status(404).json({ error: "User not found" });
+        const userData = user[0];
+
+        // 2. ดึง Collection จากตาราง pets JOIN กับ dino_catalog
+        const [collection] = await db.promise().execute(
+            `SELECT c.dino_name, c.image_url 
+             FROM pets p
+             JOIN dino_catalog c ON p.dino_id = c.dino_id
+             WHERE p.user_id = ?`, [userId]
+        );
+
+        // 3. Mock Stats ไว้ก่อน (หรือคำนวณจากตารางที่มี)
+        const stats = {
+            monthly_focus: "0h 0m",
+            Task_success: 0,
+            task_fail: 0
+        };
+
+        res.status(200).json({
+            success: true,
+            data: {
+                profile: {
+                    name: userData.username,
+                    bio: userData.bio || "No bio yet",
+                    role: userData.major || "No Major",
+                    avatar: userData.profile_image,
+                    streak: userData.consecutive_days || 0
+                },
+                stats: stats,
+                collection: collection
+            }
+        });
+    } catch (err) {
+        console.error("Profile API Error:", err);
+        res.status(500).json({ error: err.message });
+    }
+};

@@ -11,7 +11,8 @@ const CommunityCard = ({
   onAccept,
   onDecline,
   onAdd,
-  profile_image // รับค่ามาจาก Sidebar
+  profile_image,
+  onViewProfile 
 }) => {
   // ✅ ย้าย Logic มาไว้ตรงนี้ เพื่อให้ใช้ค่า profile_image และ name ของแต่ละคนได้ถูกต้อง
   const hasValidImage = profile_image && profile_image !== "default-avatar.png";
@@ -21,7 +22,10 @@ const CommunityCard = ({
     : `https://api.dicebear.com/7.x/avataaars/svg?seed=${name}`;
 
   return (
-    <div className="bg-white p-3 rounded-2xl shadow-sm border border-slate-100 flex items-center gap-3 group hover:shadow-md transition-shadow">
+    <div 
+      onClick={onViewProfile}
+      className="bg-white p-3 rounded-2xl shadow-sm border border-slate-100 flex items-center gap-3 group hover:shadow-md transition-shadow"
+    >
       <div className="w-10 h-10 bg-slate-200 rounded-full flex-shrink-0 overflow-hidden">
         <img
           src={avatarUrl}
@@ -47,7 +51,7 @@ const CommunityCard = ({
           </div>
           {type === "community" && (
             <button
-              onClick={onAdd}
+              onClick={(e) => { e.stopPropagation(); onAdd(); }}
               className="bg-slate-100 text-[8px] font-black px-2 py-1 rounded text-slate-400 group-hover:bg-indigo-600 group-hover:text-white transition-colors uppercase"
             >
               + Add
@@ -56,13 +60,13 @@ const CommunityCard = ({
           {type === "request" && (
             <div className="flex gap-1">
               <button
-                onClick={onAccept}
+                onClick={(e) => { e.stopPropagation(); onAccept(); }}
                 className="bg-[#DCFCE7] text-[8px] font-black px-2 py-1 rounded text-[#166534] hover:bg-[#22C55E] hover:text-white transition-colors uppercase"
               >
                 Accept
               </button>
               <button
-                onClick={onDecline}
+                onClick={(e) => { e.stopPropagation(); onDecline(); }}
                 className="bg-slate-100 text-[8px] font-black px-2 py-1 rounded text-slate-400 hover:bg-red-50 hover:text-red-500 transition-colors uppercase"
               >
                 ✕
@@ -75,7 +79,7 @@ const CommunityCard = ({
   );
 };
 
-const CommunitySidebar = () => {
+const CommunitySidebar = ({onSelectUser}) => {
   const [friends, setFriends] = useState([]);
   const [requests, setRequests] = useState([]);
   const [topFocusUsers, setTopFocusUsers] = useState([]);
@@ -161,6 +165,22 @@ const CommunitySidebar = () => {
     }
   };
 
+  const handleViewProfile = async (userId) => {
+    console.log("กำลังกดดูโปรไฟล์ของ ID:", userId);
+    try {
+      const res = await axios.get(`http://localhost:5050/api/community/profile/${userId}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      console.log("ดึงข้อมูลสำเร็จ:", res.data.data); // 👈 เพิ่มบรรทัดนี้
+      // ✅ ส่งข้อมูลเพื่อนกลับไปที่ Component แม่ (Page หลัก) เพื่อให้ ProfileMain แสดงผล
+      if (onSelectUser) {
+        onSelectUser(res.data.data); 
+      }
+    } catch (err) {
+      console.error("View Profile Error:", err);
+    }
+  };
+
   // ⚠️ ลบ avatarUrl ของเดิมตรงนี้ออกไปแล้ว เพื่อไม่ให้เกิด Error
 
   return (
@@ -240,6 +260,7 @@ const CommunitySidebar = () => {
               streak="Active"
               type="friend"
               profile_image={friend.profile_image} // ✅ ส่งรูป
+              onViewProfile={() => handleViewProfile(friend.user_id)}
             />
           ))}
         </div>
