@@ -1,4 +1,4 @@
-const DinoSidebar = ({ rarities, selectedRarity, onSelectRarity, onGacha }) => {
+const DinoSidebar = ({ rarities, selectedRarity, onSelectRarity, onGacha, userCoins }) => {
   return (
     <div className="col-span-3 space-y-16">
       <div className="space-y-3">
