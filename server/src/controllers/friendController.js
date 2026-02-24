@@ -6,7 +6,7 @@ exports.searchUsers = async (req, res) => {
         const [users] = await db.promise().execute(
             `SELECT user_id, username, major, profile_image
             FROM users
-            WHERE username LIKE ? AND user_id = ?`,
+            WHERE username LIKE ? AND user_id != ?`,
             [`%${username}%`, req.user.id]
         );
         res.status(200).json({success: true, data:users});
@@ -42,7 +42,7 @@ exports.acceptFriendRequest = async (req, res) => {
             [requestId, userId]
         );
 
-        if(request.lenngth === 0){
+        if(request.length === 0){
             return res.status(404).json({messge: "Friend request not found or already processed"});
         }
 
@@ -59,6 +59,23 @@ exports.acceptFriendRequest = async (req, res) => {
         res.status(500).json({error: err.message});
     }
 }
+
+// ในไฟล์ controllers/friendController.js
+exports.declineFriendRequest = async (req, res) => {
+    try {
+        const { requestId } = req.params; // ดึงจาก URL params
+        const userId = req.user.id;
+
+        await db.promise().execute(
+            `DELETE FROM friends WHERE id = ? AND receiver_id = ?`,
+            [requestId, userId]
+        );
+
+        res.status(200).json({ success: true, message: "Request declined" });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
 
 exports.getFriendRequests = async (req, res) => {
     try{
@@ -106,39 +123,25 @@ exports.getFriendList = async (req, res) => {
     }
 }
 
-exports.getTopFocusByMajor = async (req, res) => {
+exports.getGlobalTopFocus = async (req, res) => {
     try {
-        const userId = req.user.id;
-    
-        const [user] = await db.promise().execute(
-            `SELECT major FROM users WHERE user_id = ?`, [userId]
-        );
-        
-        const myMajor = user[0]?.major;
-
-        if (!myMajor) {
-            return res.status(200).json({ success: true, message: "Please set your major first", data: [] });
-        }
-
         const query = `
-        SELECT 
-            u.username, 
-            u.profile_image, 
-            u.major,
-            COALESCE(SUM(fl.duration_minutes), 0) as total_focus
-        FROM users u
-        LEFT JOIN focus_logs fl ON u.user_id = fl.user_id 
-        WHERE u.major = ? 
-        GROUP BY u.user_id
-        ORDER BY total_focus DESC
-        LIMIT 3
-    `;
+            SELECT 
+                u.user_id,
+                u.username, 
+                u.major,
+                u.profile_image,
+                u.consecutive_days as streaks -- ดึงจากตาราง users โดยตรง
+            FROM users u
+            ORDER BY u.consecutive_days DESC
+            LIMIT 3
+        `;
 
-        const [topUsers] = await db.promise().execute(query, [myMajor]);
+        const [topUsers] = await db.promise().execute(query);
 
         res.status(200).json({
             success: true,
-            my_major: myMajor,
+            title: "Today Top Focus",
             data: topUsers
         });
     } catch (err) {

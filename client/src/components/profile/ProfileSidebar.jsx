@@ -1,6 +1,14 @@
 import React from 'react';
 
 const ProfileSidebar = ({ isEditing, profile, setProfile, onRandomAvatar }) => {
+  const hasNoImage = !profile.avatar || 
+                     profile.avatar === "default-avatar.png" || 
+                     profile.avatar.trim() === "";
+
+  const avatarUrl = hasNoImage 
+    ? `https://api.dicebear.com/7.x/avataaars/svg?seed=${profile.name}` 
+    : profile.avatar;
+
   return (
     <div className="col-span-3 flex flex-col items-center">
       <div 
@@ -9,8 +17,8 @@ const ProfileSidebar = ({ isEditing, profile, setProfile, onRandomAvatar }) => {
         onClick={onRandomAvatar} // ผูกฟังก์ชันสุ่มรูป
       >
         <img 
-          src={profile.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${profile.name}`} 
-          alt="Profile" 
+          src={avatarUrl}
+          alt=""
           className="w-full h-full object-cover" 
         />
         {isEditing && (
