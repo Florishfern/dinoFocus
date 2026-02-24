@@ -61,7 +61,6 @@ const DinoPage = () => {
         { pets_id: petsId },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      alert("เปลี่ยนตัวละครสำเร็จ!");
       fetchMyDinos(); // refresh สถานะ
     } catch (error) {
       alert("เกิดข้อผิดพลาดในการเปลี่ยนตัวละคร");

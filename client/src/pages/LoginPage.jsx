@@ -25,8 +25,6 @@ const [email, setEmail] = useState("");
         localStorage.setItem("token", response.data.token);
         // เก็บข้อมูล User (ถ้ามีส่งมา)
         localStorage.setItem("user", JSON.stringify(response.data.user));
-        
-        alert("Login Successful! 🦖");
         navigate("/todo"); // ส่ง User ไปหน้า Todo (เปลี่ยน path ตามความเหมาะสม)
       }
     } catch (err) {

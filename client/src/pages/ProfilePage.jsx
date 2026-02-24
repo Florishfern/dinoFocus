@@ -78,7 +78,6 @@ const ProfilePage = () => {
         { headers: { Authorization: `Bearer ${token}` } },
       );
       setIsEditing(false);
-      alert("Profile updated!");
     } catch (err) {
       alert("Update failed");
     }
