@@ -13,7 +13,6 @@ const ProfileMain = ({
 
   const scrollRight = () => {
     if (scrollRef.current) {
-      // เลื่อนไปทางขวา 200px (ปรับตัวเลขได้ตามต้องการ)
       scrollRef.current.scrollBy({ left: 200, behavior: 'smooth' });
     }
   };

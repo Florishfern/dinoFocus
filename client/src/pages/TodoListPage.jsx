@@ -23,32 +23,25 @@ const TodoListPage = () => {
   const [tasks, setTasks] = useState([]);
   const [categories, setCategories] = useState([]);
 
-  // ดึง Token จาก LocalStorage
   const token = localStorage.getItem("token") || "";
 
-  // สร้างตัวแปรวันที่
   const year = selectedDate.getFullYear();
   const month = String(selectedDate.getMonth() + 1).padStart(2, "0");
   const day = String(selectedDate.getDate()).padStart(2, "0");
   const formattedDate = `${year}-${month}-${day}`;
 
-  // เพิ่ม State สำหรับเก็บข้อมูล Summary
   const [summary, setSummary] = useState({
     tasks: { total: 0, completed: 0 },
     time: { total_planned: 0, total_actual_spent: 0 },
   });
 
-  // 1. ดึงข้อมูลจาก Backend
-  // เปลี่ยน useEffect เดิมทั้งหมด ให้เป็นชุดนี้ชุดเดียวครับ
   useEffect(() => {
     const fetchData = async () => {
-      // ถ้าไม่มี Token ไม่ต้องยิง Fetch เพื่อลด Error 403
       if (!token) return;
 
       try {
         console.log("Fetching data for:", formattedDate);
 
-        // 1. ดึง Tasks และ Summary พร้อมกัน (ใช้วิธีเรียกแยกแต่ใน useEffect เดียว)
         const [taskRes, catRes, sumRes] = await Promise.all([
           fetch(`http://localhost:5050/api/tasks?date=${formattedDate}`, {
             headers: { Authorization: `Bearer ${token}` },
@@ -87,10 +80,7 @@ const TodoListPage = () => {
     };
 
     fetchData();
-    // เราใส่ selectedDate เพื่อให้มันเปลี่ยนวันแล้วโหลดใหม่
-    // แต่เรา "ไม่ใส่" tasks เพื่อไม่ให้เกิดลูปการโหลดไม่รู้จบ
   }, [selectedDate, formattedDate, token]);
-  // 2. ฟังก์ชันจัดการเมื่อลากวางเสร็จ (ฉบับแก้ไขสมบูรณ์)
   const handleOnDragEnd = async (result) => {
     const { source, destination, draggableId } = result;
     if (!destination) return;
@@ -105,7 +95,6 @@ const TodoListPage = () => {
     let tasksToUpdateDB = [];
 
     if (mode === "normal") {
-      // Logic โหมด Normal
       const items = tasks
         .filter((t) => t.is_completed === 0 || !t.is_completed)
         .sort((a, b) => (a.position || 0) - (b.position || 0));
@@ -124,10 +113,8 @@ const TodoListPage = () => {
         ...tasks.filter((t) => t.is_completed === 1),
       ];
     } else {
-      // Logic โหมด 3-3-3 (ลากข้ามกลุ่มได้)
       const destGroup = destination.droppableId;
 
-      // อัปเดต State เบื้องต้น
       newTasks = newTasks.map((t) =>
         t.task_id === movedTaskId
           ? { ...t, method_333: destGroup, task_type: "METHOD_333" }
@@ -167,7 +154,6 @@ const TodoListPage = () => {
     try {
       const movedTask = newTasks.find((t) => t.task_id === movedTaskId);
 
-      // 1. อัปเดต Group/Type ของตัวที่ลากผ่าน PUT
       await fetch(`http://localhost:5050/api/tasks/${movedTaskId}`, {
         method: "PUT",
         headers: {
@@ -181,7 +167,6 @@ const TodoListPage = () => {
         }),
       });
 
-      // 2. อัปเดตลำดับ Position ของทุกคนในกลุ่มที่เปลี่ยนผ่าน PATCH
       await fetch("http://localhost:5050/api/tasks/reorder", {
         method: "PATCH",
         headers: {
@@ -200,7 +185,6 @@ const TodoListPage = () => {
     }
   };
 
-  // 3. ฟังก์ชันเพิ่ม Task (Full Version)
   const handleAddTask = async (taskData) => {
     try {
       let finalCategoryId = null;
@@ -312,7 +296,6 @@ const TodoListPage = () => {
     }
   };
 
-  // 4. ฟังก์ชันสลับสถานะ (Full Version)
   const toggleTask = async (id) => {
     const taskToUpdate = tasks.find((t) => t.task_id === id);
     if (!taskToUpdate) return;

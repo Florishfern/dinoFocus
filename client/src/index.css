@@ -1,18 +1,17 @@
 @import "tailwindcss";
-/* สไตล์สำหรับ Scrollbar ใน Dropdown และ List */
 .custom-scrollbar::-webkit-scrollbar {
-  width: 6px; /* ความกว้างของแถบเลื่อน */
+  width: 6px; 
 }
 
 .custom-scrollbar::-webkit-scrollbar-track {
-  background: transparent; /* พื้นหลังของร่อง Scroll */
+  background: transparent; 
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: #e2e8f0; /* สีของตัวเลื่อน (สีเทาอ่อนนวลๆ) */
+  background: #e2e8f0; 
   border-radius: 10px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: #cbd5e1; /* สีตอนเอาเมาส์ไปชี้ */
+  background: #cbd5e1;
 }

@@ -11,9 +11,7 @@ const DinoCard = ({ name, img, onSelect, isActive, level }) => {
         </span>
       </div>
 
-      {/* รูปภาพตัวละคร - สีสดใสตลอดเวลา + ขยายใหญ่ตอน Hover */}
       <div className="relative mb-2 h-40 flex items-end justify-center">
-        {/* เงาด้านล่าง */}
         <div className="absolute bottom-1 w-24 h-4 bg-black/5 rounded-[100%] blur-md group-hover:bg-black/10 transition-all"></div>
         
         <img

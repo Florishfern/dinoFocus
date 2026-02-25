@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Navbar from "../components/Navbar";
-// ตรวจสอบ path อีกครั้งว่า 'profile' หรือ 'Profile'
 import ProfileSidebar from "../components/profile/ProfileSidebar";
 import ProfileMain from "../components/profile/ProfileMain";
 import CommunitySidebar from "../components/profile/CommunitySidebar";
@@ -23,7 +22,7 @@ const ProfilePage = () => {
   });
   const [collection, setCollection] = useState([]);
 
-  const [displayData, setDisplayData] = useState(null); // เก็บข้อมูลที่จะแสดง (ตัวเอง หรือ เพื่อน)
+  const [displayData, setDisplayData] = useState(null); 
   const [isViewingFriend, setIsViewingFriend] = useState(false);
 
   const currentProfile = isViewingFriend ? displayData.profile : profile;
@@ -43,7 +42,7 @@ const ProfilePage = () => {
         name: userData.username,
         bio: userData.bio || "No bio yet",
         role: userData.major || "No Major",
-        location: "Thailand", // ตามดีไซน์เดิม
+        location: "Thailand", 
         avatar: userData.profile_image,
         streak: userData.consecutive_days || 0,
       });
@@ -57,7 +56,6 @@ const ProfilePage = () => {
   };
 
   const fetchMyProfile = async () => {
-    // ... logic ดึงโปรไฟล์ตัวเอง ...
     setIsViewingFriend(false);
   };
 
@@ -73,7 +71,7 @@ const ProfilePage = () => {
           username: profile.name,
           bio: profile.bio,
           major: profile.role,
-          profile_image: profile.avatar, // ส่ง URL ของ DiceBear ไปเก็บใน DB
+          profile_image: profile.avatar, 
         },
         { headers: { Authorization: `Bearer ${token}` } },
       );
@@ -101,10 +99,8 @@ const ProfilePage = () => {
     <div className="min-h-screen bg-[#F0F2F5] pb-10">
       <Navbar />
       
-      {/* 1. ขยายขอบเขต main ให้กว้างเท่าเดิม แต่เอา grid ออกจากแท็กหลักก่อน */}
       <main className="max-w-[1200px] mx-auto mt-12 px-8">
-        
-        {/* 2. วางปุ่มไว้นอก Grid หลัก เพื่อให้มันอยู่เหนือ Sidebar ไม่ไปเบียดด้านข้าง */}
+
         {isViewingFriend && (
           <button 
             onClick={() => setIsViewingFriend(false)} 
@@ -117,7 +113,6 @@ const ProfilePage = () => {
           </button>
         )}
 
-        {/* 3. สร้าง div ใหม่มารับหน้าที่เป็น Grid แทน เพื่อหุ้มแค่ 3 Component หลัก */}
         <div className="grid grid-cols-12 gap-12">
           <ProfileSidebar
             isEditing={!isViewingFriend && isEditing}
@@ -134,7 +129,7 @@ const ProfilePage = () => {
             collection={currentCollection}
             onSave={handleUpdateProfile}
             onRandomAvatar={handleGenerateAvatar}
-            isViewingFriend={isViewingFriend} // ✅ ส่งตัวแปรนี้ไปซ่อนปุ่ม EDIT ในหน้า ProfileMain ด้วย
+            isViewingFriend={isViewingFriend} 
           />
           <CommunitySidebar 
             onSelectUser={(data) => {

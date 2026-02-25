@@ -8,13 +8,7 @@ const HomePage = () => {
 
   return (
     <div className="min-h-screen bg-[#EEEFF1] font-sans text-slate-800">
-      {/* 1. Navbar */}
-
-      {/* 2. แทนที่ <nav> เดิมด้วย Component Navbar */}
-      {/* ส่ง showCoins={false} เพื่อซ่อนเหรียญ และ showSignIn={true} เพื่อโชว์ปุ่ม */}
       <Navbar showCoins={false} showSignIn={true} />
-
-      {/* 2. Hero Section */}
 
       <section className="max-w-7xl mx-auto px-12 py-5 grid md:grid-cols-2 items-center gap-12">
         <div className="space-y-6">
@@ -36,7 +30,6 @@ const HomePage = () => {
         </div>
 
         <div className="relative flex justify-center">
-          {/* เงารูปภาพด้านล่าง */}
 
           <div className="absolute bottom-[-20px] w-48 h-8 bg-slate-200 rounded-[100%] blur-xl opacity-60"></div>
 
@@ -47,8 +40,6 @@ const HomePage = () => {
           />
         </div>
       </section>
-
-      {/* 3. Feature Bar */}
 
       <div className="max-w-4xl mx-auto mb-10 mt-0">
         <div className="bg-white shadow-[0_10px_40px_rgba(0,0,0,0.04)] rounded-2xl py-6 px-10 flex justify-between border border-slate-50">
@@ -97,15 +88,12 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* 5. Productivity Methods */}
-
       <section className="max-w-7xl mx-auto px-12 pt-12 pb-24 text-center">
         <h2 className="text-3xl font-black text-slate-900 mb-16">
           Productivity Methods
         </h2>
 
         <div className="grid md:grid-cols-2 gap-10 max-w-4xl mx-auto">
-          {/* Card 1 */}
 
           <div className="bg-white p-10 rounded-[40px] shadow-[0_20px_50px_rgba(0,0,0,0.05)] border border-slate-50 flex flex-col items-center gap-6">
             <h3 className="text-2xl font-bold text-slate-800">Pomodoro</h3>
@@ -117,8 +105,6 @@ const HomePage = () => {
               sessions and refreshing breaks.
             </p>
           </div>
-
-          {/* Card 2 */}
 
           <div className="bg-white p-10 rounded-[40px] shadow-[0_20px_50px_rgba(0,0,0,0.05)] border border-slate-50 flex flex-col items-center gap-6">
             <h3 className="text-2xl font-bold text-slate-800">3-3-3 Method</h3>

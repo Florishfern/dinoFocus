@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
-// CommunityCard ยังคงดีไซน์เดิมของคุณไว้ทุกบรรทัด
 const CommunityCard = ({
   name,
   role,
@@ -14,7 +13,6 @@ const CommunityCard = ({
   profile_image,
   onViewProfile 
 }) => {
-  // ✅ ย้าย Logic มาไว้ตรงนี้ เพื่อให้ใช้ค่า profile_image และ name ของแต่ละคนได้ถูกต้อง
   const hasValidImage = profile_image && profile_image !== "default-avatar.png";
 
   const avatarUrl = hasValidImage 
@@ -171,8 +169,7 @@ const CommunitySidebar = ({onSelectUser}) => {
       const res = await axios.get(`http://localhost:5050/api/community/profile/${userId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      console.log("ดึงข้อมูลสำเร็จ:", res.data.data); // 👈 เพิ่มบรรทัดนี้
-      // ✅ ส่งข้อมูลเพื่อนกลับไปที่ Component แม่ (Page หลัก) เพื่อให้ ProfileMain แสดงผล
+      console.log("ดึงข้อมูลสำเร็จ:", res.data.data); 
       if (onSelectUser) {
         onSelectUser(res.data.data); 
       }
@@ -180,8 +177,6 @@ const CommunitySidebar = ({onSelectUser}) => {
       console.error("View Profile Error:", err);
     }
   };
-
-  // ⚠️ ลบ avatarUrl ของเดิมตรงนี้ออกไปแล้ว เพื่อไม่ให้เกิด Error
 
   return (
     <div className="col-span-3 border-l border-slate-200 pl-8 space-y-8">

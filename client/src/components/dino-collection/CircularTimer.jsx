@@ -1,13 +1,11 @@
 import React from 'react';
 
 const CircularTimer = ({ minutes = 25, seconds = 0 }) => {
-  // คำนวณเส้นรอบวง (Circumference) ของวงกลม
   const radius = 120;
   const stroke = 12;
   const normalizedRadius = radius - stroke * 2;
   const circumference = normalizedRadius * 2 * Math.PI;
-  
-  // ตัวอย่าง Progress (ในที่นี้ตั้งไว้ที่ 75% ตามรูป)
+
   const strokeDashoffset = circumference - (75 / 100) * circumference;
 
   return (
@@ -56,7 +54,6 @@ const CircularTimer = ({ minutes = 25, seconds = 0 }) => {
         </div>
       </div>
 
-      {/* ปุ่ม Start ด้านล่าง */}
       <button className="mt-16 bg-[#2D2E3E] text-white w-full max-w-[200px] py-4 rounded-[24px] text-lg font-black shadow-lg hover:scale-105 transition-transform">
         START
       </button>

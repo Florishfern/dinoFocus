@@ -7,13 +7,11 @@ import ProfilePage from "./pages/ProfilePage";
 import LoginPage from "./pages/LoginPage";
 import SignUpPage from "./pages/SignUpPage";
 import ProtectedRoute from './components/ProtectedRoute';
-// import อื่นๆ...
 
 function App() {
   return (
     <Router>
       <div className="min-h-screen bg-slate-50">
-        {/* ตรงนี้คือจุดที่แสดงเนื้อหา */}
         <Routes>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignUpPage />} />

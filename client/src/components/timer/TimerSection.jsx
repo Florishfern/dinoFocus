@@ -14,7 +14,7 @@ const TimerSection = ({ activeTask, onTaskFinished }) => {
       setTimeLeft(seconds);
       setInitialTime(seconds);
       setInputValue(`${minutes.toString().padStart(2, "0")}:00`);
-      setIsRunning(false); // หยุดตัวนับเวลาชั่วคราวเพื่อให้ผู้ใช้กด Start เอง
+      setIsRunning(false); 
     }
   }, [activeTask]);
 
@@ -71,14 +71,10 @@ const TimerSection = ({ activeTask, onTaskFinished }) => {
 
   const handleToggle = () => {
     if (isRunning) {
-      // ถ้ากดปุ่มขณะที่นาฬิกาเดินอยู่ (ปุ่ม Finish)
       if (window.confirm("Do you want to finish and save your progress now?")) {
         handleTimerComplete();
       }
     } else {
-      // ถ้ายังไม่รัน ให้เริ่ม Start
-      
-        // กรณีไม่ได้เลือก Task แต่จะกด Start (ใช้เวลาจาก input)
         const [m, s] = inputValue.split(":").map(Number);
         const totalSeconds = (m || 0) * 60 + (s || 0);
         if (totalSeconds > 0) {
@@ -94,7 +90,6 @@ const TimerSection = ({ activeTask, onTaskFinished }) => {
 
   const handleInputChange = (e) => {
     const val = e.target.value;
-    // อนุญาตให้พิมพ์แค่ตัวเลขและเครื่องหมาย :
     if (/^[0-9:]*$/.test(val)) {
       setInputValue(val);
     }
@@ -141,8 +136,6 @@ const TimerSection = ({ activeTask, onTaskFinished }) => {
             value={isRunning ? displayTime() : inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             disabled={isRunning}
-            // text-slate-900 คือสีปกติ
-            // focus:text-indigo-600 คือสีตอนคลิกเข้าไปพิมพ์
             className="w-36 bg-transparent text-4xl font-black text-center outline-none transition-colors duration-200 text-slate-900 focus:text-indigo-600 cursor-text"
             placeholder="25:00"
           />
@@ -150,11 +143,11 @@ const TimerSection = ({ activeTask, onTaskFinished }) => {
       </div>
 
       <button
-        onClick={handleToggle} // เปลี่ยนจาก toggleTimer เป็น handleToggle
+        onClick={handleToggle} 
         className={`w-full max-w-[160px] py-4 rounded-[22px] font-black uppercase tracking-widest transition-all ${
           isRunning
-            ? "bg-red-500 text-white shadow-lg shadow-red-100" // สีแดงเมื่อกำลังรัน (ปุ่ม Finish)
-            : "bg-[#2D3142] text-white" // สีปกติ (ปุ่ม Start)
+            ? "bg-red-500 text-white shadow-lg shadow-red-100" 
+            : "bg-[#2D3142] text-white" 
         }`}
       >
         {isRunning ? "Finish" : "Start"}

@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom"; // เพิ่ม useNavigate
+import { Link, useLocation, useNavigate } from "react-router-dom"; 
 import Coin from "./Coin";
 
-// เพิ่ม Props: showCoins (ค่าเริ่มต้นเป็น true), showSignIn (ค่าเริ่มต้นเป็น false)
 const Navbar = ({ showCoins = true, showSignIn = false }) => {
   const location = useLocation();
-  const navigate = useNavigate(); // สำหรับปุ่ม Sign in
+  const navigate = useNavigate();
 
   const [balance, setBalance] = useState(0);
   const token = localStorage.getItem("token");
@@ -19,7 +18,7 @@ const Navbar = ({ showCoins = true, showSignIn = false }) => {
         });
         const result = await response.json();
         if (result.success) {
-          setBalance(result.data.coins); // เก็บค่า coins ลงใน state
+          setBalance(result.data.coins); 
         }
       } catch (err) {
         console.error("Failed to fetch balance:", err);
@@ -27,7 +26,7 @@ const Navbar = ({ showCoins = true, showSignIn = false }) => {
     };
     fetchBalance();
 
-    window.addEventListener("balanceUpdated", fetchBalance); // ดักฟัง Event
+    window.addEventListener("balanceUpdated", fetchBalance); 
     return () => window.removeEventListener("balanceUpdated", fetchBalance);
   }, [token, showCoins]);
 
@@ -64,12 +63,8 @@ const Navbar = ({ showCoins = true, showSignIn = false }) => {
         </Link>
       </div>
 
-      {/* 3. ส่วนด้านขวา (Coin หรือ Sign in) */}
       <div className="flex items-center gap-4">
-        {/* แสดงเหรียญเฉพาะเมื่อ showCoins เป็น true */}
         {showCoins && <Coin amount={balance} />}
-
-        {/* แสดงปุ่ม Sign in เฉพาะเมื่อ showSignIn เป็น true */}
         {showSignIn && (
           <button
             onClick={() => navigate("/login")}

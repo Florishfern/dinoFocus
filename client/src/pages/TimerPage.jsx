@@ -10,7 +10,6 @@ const TimerPage = () => {
   const [selectedTask, setSelectedTask] = useState(null);
   const [categories, setCategories] = useState([]);
 
-  // 1. เพิ่ม State สำหรับเก็บงาน (จุดที่ขาดไป)
   const [tasks, setTasks] = useState([]);
 
   const token = localStorage.getItem("token");
@@ -23,7 +22,7 @@ const TimerPage = () => {
       const response = await axios.get("http://localhost:5050/api/categories", {
         headers: { Authorization: `Bearer ${token}` },
       });
-      setCategories(response.data); // เก็บข้อมูล Array ของหมวดหมู่
+      setCategories(response.data); 
     } catch (error) {
       console.error("Error fetching categories:", error);
     }
@@ -66,7 +65,7 @@ const TimerPage = () => {
     };
 
     fetchActivePet();
-    fetchTasks(); // 2. สั่งให้โหลดงานตอนเปิดหน้า (จุดที่ขาดไป)
+    fetchTasks(); 
     fetchCategories();
   }, []);
 
@@ -75,13 +74,12 @@ const TimerPage = () => {
       <Navbar />
       <main className="max-w-[1250px] mx-auto mt-5 px-8">
         <div className="grid grid-cols-12 gap-8 items-center">
-          {/* 3. ส่ง Props ไปให้ลูกๆ (จุดที่ขาดไป) */}
           <TaskSection
-            todoList={tasks} // ส่งรายการงาน
+            todoList={tasks} 
             categories={categories}
-            fetchTasks={fetchTasks} // ส่งฟังก์ชันไปให้ลูกใช้รีเฟรช
+            fetchTasks={fetchTasks} 
             onSelectTask={(task) => {
-              console.log("TimerPage received task:", task); // เช็คว่าตัวแม่ได้รับงานไหม
+              console.log("TimerPage received task:", task); 
               setSelectedTask(task);
             }}
             selectedTaskId={selectedTask?.task_id}

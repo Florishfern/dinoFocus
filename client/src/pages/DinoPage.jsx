@@ -1,4 +1,3 @@
-// src/pages/DinoPage.jsx
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Navbar from '../components/Navbar';
@@ -61,7 +60,7 @@ const DinoPage = () => {
         { pets_id: petsId },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      fetchMyDinos(); // refresh สถานะ
+      fetchMyDinos(); 
     } catch (error) {
       alert("เกิดข้อผิดพลาดในการเปลี่ยนตัวละคร");
     }
@@ -77,7 +76,7 @@ const DinoPage = () => {
       );
       setGachaResult(response.data.data);
       setShowResult(true);
-      setUserCoins(response.data.new_balance); // อัปเดตเงินทันที
+      setUserCoins(response.data.new_balance); 
 
       window.dispatchEvent(new Event("balanceUpdated"));
       
@@ -130,7 +129,6 @@ const DinoPage = () => {
               {gachaResult.status === "Level Up!" ? "Level Up!" : "New Friend!"}
             </h2>
             <div className="relative py-6">
-               {/* วงแสงหลังตัวละคร */}
               <div className="absolute inset-0 bg-orange-100 rounded-full blur-3xl opacity-50 scale-75"></div>
               <img 
                 src={gachaResult.image} 

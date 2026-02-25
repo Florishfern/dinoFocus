@@ -3,11 +3,8 @@ import React from "react";
 const Calendar = ({ selectedDate, onDateSelect }) => {
   const year = selectedDate.getFullYear();
   const month = selectedDate.getMonth();
-
-  // --- จุดที่เพิ่ม: คำนวณวันแรกของเดือน (0 = Sunday, 1 = Monday, ...) ---
   const firstDayOfMonth = new Date(year, month, 1).getDay();
 
-  // ฟังก์ชันคำนวณจำนวนวันในเดือนนั้นๆ
   const daysInMonth = new Date(year, month + 1, 0).getDate();
   const days = Array.from({ length: daysInMonth }, (_, i) => i + 1);
 
@@ -50,7 +47,6 @@ const Calendar = ({ selectedDate, onDateSelect }) => {
           <div key={`header-${index}`} className="text-slate-300 py-1">{d}</div>
         ))}
 
-        {/* --- จุดที่เพิ่ม: สร้างช่องว่างเพื่อให้วันที่ 1 ตรงกับวันในสัปดาห์ที่ถูกต้อง --- */}
         {Array.from({ length: firstDayOfMonth }).map((_, i) => (
           <div key={`empty-${i}`} className="py-2"></div>
         ))}

@@ -12,13 +12,10 @@ const TaskSection = ({
   const [task, setTask] = useState("");
   const [selectedCategoryId, setSelectedCategoryId] = useState("");
 
-  // --- ส่วนที่เพิ่มมาเพื่อจัดการ Dropdown ---
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
 
-  // ตั้งค่า Default Category เมื่อข้อมูลโหลดมาครั้งแรก
   useEffect(() => {
-    // ฟังก์ชันปิด Dropdown เมื่อคลิกข้างนอก
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setIsDropdownOpen(false);
@@ -33,7 +30,6 @@ const TaskSection = ({
     timeZone: "Asia/Bangkok",
   });
 
-  // หาข้อมูล Category ที่เลือกอยู่เพื่อโชว์ชื่อและสีบนปุ่ม
   const selectedCat = categories?.find(
     (c) => String(c.category_id) === String(selectedCategoryId),
   );
@@ -91,7 +87,6 @@ const TaskSection = ({
 
       {activeTab === "new" ? (
         <div className="w-full space-y-7 px-2">
-          {/* ส่วน Task Name (คงเดิม) */}
           <div>
             <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2.5 ml-1">
               Task Name
@@ -106,7 +101,6 @@ const TaskSection = ({
             />
           </div>
 
-          {/* ส่วน Custom Dropdown (แก้ไข: เด้งลงล่าง + เลื่อน Scroll ได้) */}
           <div className="relative" ref={dropdownRef}>
             <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2.5 ml-1">
               Category
@@ -123,7 +117,6 @@ const TaskSection = ({
                 }`}
             >
               <span className="flex items-center gap-2">
-                {/* เงื่อนไข: โชว์จุดสีเฉพาะเมื่อมีการเลือกหมวดหมู่แล้วเท่านั้น */}
                 {selectedCat && (
                   <div
                     className="w-2 h-2 rounded-full"
@@ -139,13 +132,10 @@ const TaskSection = ({
               </span>
             </button>
 
-            {/* เมนูที่เด้งลงด้านล่าง + Scroll ได้ */}
             {isDropdownOpen && (
               <div className="absolute left-0 top-[calc(100%+10px)] w-full min-w-[200px] bg-white rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.15)] py-3 z-50 border border-slate-50 animate-in fade-in slide-in-from-top-2 duration-200">
-                {/* ติ่งสามเหลี่ยม (ชี้ขึ้น) */}
                 <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-white rotate-45 border-l border-t border-slate-50"></div>
 
-                {/* รายการหมวดหมู่ (กลับมาใช้ max-h และ overflow-y-auto เพื่อให้เลื่อนได้) */}
                 <div className="max-h-[200px] overflow-y-auto custom-scrollbar flex flex-col">
                   {categories?.map((cat) => (
                     <button
@@ -172,7 +162,6 @@ const TaskSection = ({
           </div>
         </div>
       ) : (
-        /* To-do list view (คงเดิมไว้ทั้งหมด ไม่หายแน่นอน) */
         <div className="flex-1 overflow-y-auto space-y-3 pr-2 custom-scrollbar">
           {todoList && todoList.length > 0 ? (
             todoList
@@ -181,7 +170,7 @@ const TaskSection = ({
                 <div
                   key={item.task_id || `task-${index}`}
                   onClick={() => {
-                    console.log("Selected Item:", item); // เพิ่มบรรทัดนี้เพื่อดูว่า item มี title กับ task_id จริงไหม
+                    console.log("Selected Item:", item); 
                     onSelectTask(item);
                   }}
                   className={`flex items-center p-4 rounded-2xl border transition-all cursor-pointer group 

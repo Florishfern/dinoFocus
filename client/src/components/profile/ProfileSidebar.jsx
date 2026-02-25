@@ -14,7 +14,7 @@ const ProfileSidebar = ({ isEditing, profile, setProfile, onRandomAvatar }) => {
       <div 
         className={`w-48 h-48 bg-slate-300 rounded-full mb-6 border-4 border-white shadow-sm overflow-hidden relative group 
           ${isEditing ? 'cursor-pointer hover:ring-4 ring-indigo-200' : ''}`}
-        onClick={onRandomAvatar} // ผูกฟังก์ชันสุ่มรูป
+        onClick={onRandomAvatar} 
       >
         <img 
           src={avatarUrl}

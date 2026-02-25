@@ -19,23 +19,18 @@ const [email, setEmail] = useState("");
         password,
       });
 
-      // ถ้า Login สำเร็จ Backend มักจะส่ง token มาให้
       if (response.data.token) {
-        // เก็บ Token ไว้ใน LocalStorage เพื่อใช้ในหน้าอื่นๆ
         localStorage.setItem("token", response.data.token);
-        // เก็บข้อมูล User (ถ้ามีส่งมา)
         localStorage.setItem("user", JSON.stringify(response.data.user));
-        navigate("/todo"); // ส่ง User ไปหน้า Todo (เปลี่ยน path ตามความเหมาะสม)
+        navigate("/todo"); 
       }
     } catch (err) {
-      // จัดการเมื่อ Login ไม่สำเร็จ
       setError(err.response?.data?.message || "Login failed. Please try again.");
     }
   };
   return (
     <div className="min-h-screen bg-[#F0F2F5] relative overflow-x-hidden flex flex-col">
 
-      {/* Main Content Area */}
       <main className="flex-1 flex justify-center items-start pt-6 pb-20 relative px-6 z-10">
 
         {/* --- Sign In Card --- */}
