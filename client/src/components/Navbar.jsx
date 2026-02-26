@@ -13,7 +13,7 @@ const Navbar = ({ showCoins = true, showSignIn = false }) => {
     const fetchBalance = async () => {
       if (!token || !showCoins) return;
       try {
-        const response = await fetch("http://localhost:5050/api/users/balance", {
+        const response = await fetch("/api/users/balance", {
           headers: { Authorization: `Bearer ${token}` },
         });
         const result = await response.json();

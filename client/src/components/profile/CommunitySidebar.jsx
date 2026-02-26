@@ -95,7 +95,7 @@ const CommunitySidebar = ({onSelectUser}) => {
     }
     try {
       const res = await axios.get(
-        `https://dinofocus.onrender.com/api/community/search?username=${searchQuery}`,
+        `/api/community/search?username=${searchQuery}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setSearchResults(res.data.data || []);
@@ -108,7 +108,7 @@ const CommunitySidebar = ({onSelectUser}) => {
   const handleAddFriend = async (receiverId) => {
     try {
       await axios.post(
-        "https://dinofocus.onrender.com/api/community/add-friend",
+        "/api/community/add-friend",
         { receiver_id: receiverId },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -124,9 +124,9 @@ const CommunitySidebar = ({onSelectUser}) => {
       try {
         const headers = { Authorization: `Bearer ${token}` };
         const [resList, resReq, resLeaderboard] = await Promise.all([
-          axios.get("https://dinofocus.onrender.com/api/community/list", { headers }),
-          axios.get("https://dinofocus.onrender.com/api/community/requests", { headers }),
-          axios.get("https://dinofocus.onrender.com/api/community/leaderboard", { headers }),
+          axios.get("/api/community/list", { headers }),
+          axios.get("/api/community/requests", { headers }),
+          axios.get("/api/community/leaderboard", { headers }),
         ]);
         setFriends(resList.data.data || []);
         setRequests(resReq.data.data || []);
@@ -141,7 +141,7 @@ const CommunitySidebar = ({onSelectUser}) => {
   const handleAccept = async (requestId) => {
     try {
       await axios.patch(
-        "https://dinofocus.onrender.com/api/community/accept-friend",
+        "/api/community/accept-friend",
         { requestId },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -154,7 +154,7 @@ const CommunitySidebar = ({onSelectUser}) => {
   const handleDecline = async (requestId) => {
     try {
       await axios.delete(
-        `https://dinofocus.onrender.com/api/community/decline-friend/${requestId}`,
+        `/api/community/decline-friend/${requestId}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       window.location.reload();
@@ -166,7 +166,7 @@ const CommunitySidebar = ({onSelectUser}) => {
   const handleViewProfile = async (userId) => {
     console.log("กำลังกดดูโปรไฟล์ของ ID:", userId);
     try {
-      const res = await axios.get(`https://dinofocus.onrender.com/api/community/profile/${userId}`, {
+      const res = await axios.get(`/api/community/profile/${userId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       console.log("ดึงข้อมูลสำเร็จ:", res.data.data); 

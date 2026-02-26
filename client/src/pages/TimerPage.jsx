@@ -19,7 +19,7 @@ const TimerPage = () => {
 
   const fetchCategories = async () => {
     try {
-      const response = await axios.get("https://dinofocus.onrender.com/api/categories", {
+      const response = await axios.get("/api/categories", {
         headers: { Authorization: `Bearer ${token}` },
       });
       setCategories(response.data); 
@@ -32,7 +32,7 @@ const TimerPage = () => {
     try {
       if (!token) return;
       const response = await axios.get(
-        `https://dinofocus.onrender.com/api/tasks?date=${today}`,
+        `/api/tasks?date=${today}`,
         {
           headers: { Authorization: `Bearer ${token.trim()}` },
         },
@@ -48,7 +48,7 @@ const TimerPage = () => {
       try {
         if (!token) return;
         const response = await axios.get(
-          "https://dinofocus.onrender.com/api/pets/active",
+          "/api/pets/active",
           {
             headers: { Authorization: `Bearer ${token.trim()}` },
           },
