@@ -38,7 +38,7 @@ const TaskSection = ({
     if (e.key === "Enter" && task.trim() !== "") {
       try {
         await axios.post(
-          "http://localhost:5050/api/tasks",
+          "https://dinofocus.onrender.com/api/tasks",
           {
             title: task,
             task_type: "NORMAL",

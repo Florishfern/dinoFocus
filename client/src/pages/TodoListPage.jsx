@@ -43,14 +43,14 @@ const TodoListPage = () => {
         console.log("Fetching data for:", formattedDate);
 
         const [taskRes, catRes, sumRes] = await Promise.all([
-          fetch(`http://localhost:5050/api/tasks?date=${formattedDate}`, {
+          fetch(`https://dinofocus.onrender.com/api/tasks?date=${formattedDate}`, {
             headers: { Authorization: `Bearer ${token}` },
           }),
-          fetch(`http://localhost:5050/api/categories`, {
+          fetch(`https://dinofocus.onrender.com/api/categories`, {
             headers: { Authorization: `Bearer ${token}` },
           }),
           fetch(
-            `http://localhost:5050/api/tasks/summary?date=${formattedDate}`,
+            `https://dinofocus.onrender.com/api/tasks/summary?date=${formattedDate}`,
             {
               headers: { Authorization: `Bearer ${token}` },
             },
@@ -154,7 +154,7 @@ const TodoListPage = () => {
     try {
       const movedTask = newTasks.find((t) => t.task_id === movedTaskId);
 
-      await fetch(`http://localhost:5050/api/tasks/${movedTaskId}`, {
+      await fetch(`https://dinofocus.onrender.com/api/tasks/${movedTaskId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -167,7 +167,7 @@ const TodoListPage = () => {
         }),
       });
 
-      await fetch("http://localhost:5050/api/tasks/reorder", {
+      await fetch("https://dinofocus.onrender.com/api/tasks/reorder", {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -217,7 +217,7 @@ const TodoListPage = () => {
         const pool = availableColors.length > 0 ? availableColors : allowColors;
         finalColor = pool[Math.floor(Math.random() * pool.length)];
 
-        const catRes = await fetch("http://localhost:5050/api/categories", {
+        const catRes = await fetch("https://dinofocus.onrender.com/api/categories", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -270,7 +270,7 @@ const TodoListPage = () => {
         position: newPosition
       };
 
-      const response = await fetch("http://localhost:5050/api/tasks", {
+      const response = await fetch("https://dinofocus.onrender.com/api/tasks", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -302,7 +302,7 @@ const TodoListPage = () => {
     try {
       const newStatus = taskToUpdate.is_completed === 1 ? 0 : 1;
       const response = await fetch(
-        `http://localhost:5050/api/tasks/${id}/status`,
+        `https://dinofocus.onrender.com/api/tasks/${id}/status`,
         {
           method: "PATCH",
           headers: {
@@ -320,7 +320,7 @@ const TodoListPage = () => {
         );
 
         const sumRes = await fetch(
-          `http://localhost:5050/api/tasks/summary?date=${formattedDate}`,
+          `https://dinofocus.onrender.com/api/tasks/summary?date=${formattedDate}`,
           {
             headers: { Authorization: `Bearer ${token}` },
           },

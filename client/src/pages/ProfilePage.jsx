@@ -33,7 +33,7 @@ const ProfilePage = () => {
 
   const fetchProfileData = async () => {
     try {
-      const res = await axios.get("http://localhost:5050/api/users/profile", {
+      const res = await axios.get("https://dinofocus.onrender.com/api/users/profile", {
         headers: { Authorization: `Bearer ${token}` },
       });
       const { profile: userData, summary, dino_collection } = res.data.data;
@@ -66,7 +66,7 @@ const ProfilePage = () => {
   const handleUpdateProfile = async () => {
     try {
       await axios.put(
-        "http://localhost:5050/api/users/profile/update",
+        "https://dinofocus.onrender.com/api/users/profile/update",
         {
           username: profile.name,
           bio: profile.bio,

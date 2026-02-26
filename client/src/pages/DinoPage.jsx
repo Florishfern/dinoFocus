@@ -25,7 +25,7 @@ const DinoPage = () => {
 
   const fetchUserCoins = async () => {
     try {
-      const res = await axios.get("http://localhost:5050/api/users/profile", {
+      const res = await axios.get("https://dinofocus.onrender.com/api/users/profile", {
         headers: { Authorization: `Bearer ${token}` }
       });
       setUserCoins(res.data.data.profile.total_coins || 0);
@@ -37,7 +37,7 @@ const DinoPage = () => {
     try {
       setLoading(true);
       const response = await axios.get(
-        `http://localhost:5050/api/pets/my-dinos?rarity=${selectedRarity}`,
+        `https://dinofocus.onrender.com/api/pets/my-dinos?rarity=${selectedRarity}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setMyDinos(response.data.data);
@@ -56,7 +56,7 @@ const DinoPage = () => {
   const handleSelectDino = async (petsId) => {
     try {
       await axios.post(
-        "http://localhost:5050/api/pets/select",
+        "https://dinofocus.onrender.com/api/pets/select",
         { pets_id: petsId },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -70,7 +70,7 @@ const DinoPage = () => {
     setShowConfirm(false);
     try {
       const response = await axios.post(
-        "http://localhost:5050/api/pets/gacha",
+        "https://dinofocus.onrender.com/api/pets/gacha",
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );

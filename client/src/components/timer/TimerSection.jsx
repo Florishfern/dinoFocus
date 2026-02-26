@@ -49,7 +49,7 @@ const TimerSection = ({ activeTask, onTaskFinished }) => {
       };
 
       const response = await axios.post(
-        "http://localhost:5050/api/focus",
+        "https://dinofocus.onrender.com/api/focus",
         payload,
         {
           headers: { Authorization: `Bearer ${token}` },
