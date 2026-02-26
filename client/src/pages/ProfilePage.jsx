@@ -33,7 +33,7 @@ const ProfilePage = () => {
 
   const fetchProfileData = async () => {
     try {
-      const res = await axios.get("https://dinofocus.onrender.co/api/users/profile", {
+      const res = await axios.get("/api/users/profile", {
         headers: { Authorization: `Bearer ${token}` },
       });
       const { profile: userData, summary, dino_collection } = res.data.data;
