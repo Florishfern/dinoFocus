@@ -7,16 +7,17 @@ const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const [rememberMe, setRememberMe] = useState(false);
 
-  // 5. ฟังก์ชันสำหรับส่งข้อมูล Login
   const handleLogin = async (e) => {
     e.preventDefault();
-    setError(""); // ล้าง error เก่าก่อนส่งใหม่
+    setError(""); 
 
     try {
       const response = await axios.post("/api/auth/login", {
         email,
         password,
+        rememberMe,
       });
 
       if (response.data.token) {
@@ -28,6 +29,7 @@ const [email, setEmail] = useState("");
       setError(err.response?.data?.message || "Login failed. Please try again.");
     }
   };
+
   return (
     <div className="min-h-screen bg-[#F0F2F5] relative overflow-x-hidden flex flex-col">
 
@@ -77,18 +79,14 @@ const [email, setEmail] = useState("");
               <label className="flex items-center gap-2 cursor-pointer group">
                 <input
                   type="checkbox"
+                  checked={rememberMe} 
+                  onChange={(e) => setRememberMe(e.target.checked)} 
                   className="w-4 h-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
                 />
                 <span className="text-[12px] font-bold text-slate-400 group-hover:text-slate-600 transition-colors">
                   Remember me
                 </span>
               </label>
-              <a
-                href="#"
-                className="text-[12px] font-bold text-slate-300 hover:text-indigo-500 transition-colors"
-              >
-                Forget the password?
-              </a>
             </div>
 
             {/* Sign In Button */}
@@ -98,27 +96,7 @@ const [email, setEmail] = useState("");
               Sign in
             </button>
 
-            {/* Divider */}
-            <div className="relative flex items-center py-4">
-              <div className="flex-grow border-t border-slate-200"></div>
-              <span className="flex-shrink mx-4 text-[10px] font-bold text-slate-300 uppercase tracking-widest">
-                Or sign in with
-              </span>
-              <div className="flex-grow border-t border-slate-200"></div>
-            </div>
-
-            {/* Google Login */}
-            <button
-              type="button"
-              className="w-full bg-[#F3F4F6] text-slate-600 py-3.5 rounded-xl font-bold text-sm flex items-center justify-center gap-3 hover:bg-gray-200 transition-all active:scale-[0.98]"
-            >
-              <img
-                src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
-                className="w-5 h-5"
-                alt="google"
-              />
-              Google
-            </button>
+            
 
             {/* Sign Up Link */}
             <p className="text-center text-[13px] font-bold text-slate-400 pt-4">

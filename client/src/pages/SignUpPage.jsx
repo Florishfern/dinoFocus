@@ -75,7 +75,7 @@ const SignUpPage = () => {
                 required
                 value={formData.email}
                 onChange={(e) => setFormData({...formData, email: e.target.value})}
-                placeholder="Email address"
+                placeholder="example@email.com"
                 className="w-full bg-[#D9D9D9]/50 border-none rounded-xl py-3.5 px-5 text-sm font-semibold placeholder:text-slate-400 focus:ring-2 focus:ring-indigo-100 outline-none transition-all"
               />
             </div>
@@ -101,25 +101,6 @@ const SignUpPage = () => {
               {loading ? 'Registering...' : 'Sign up'}
             </button>
 
-            <div className="relative flex items-center py-4">
-              <div className="flex-grow border-t border-slate-200"></div>
-              <span className="flex-shrink mx-4 text-[10px] font-bold text-slate-300 uppercase tracking-widest">
-                Or sign up with
-              </span>
-              <div className="flex-grow border-t border-slate-200"></div>
-            </div>
-
-            <button
-              type="button"
-              className="w-full bg-[#F3F4F6] text-slate-600 py-3.5 rounded-xl font-bold text-sm flex items-center justify-center gap-3 hover:bg-gray-200 transition-all"
-            >
-              <img
-                src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
-                className="w-5 h-5"
-                alt="google"
-              />
-              Google
-            </button>
 
             <p className="text-center text-[13px] font-bold text-slate-400 pt-4">
               Already have an account?{" "}

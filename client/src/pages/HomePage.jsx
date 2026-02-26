@@ -80,10 +80,7 @@ const HomePage = () => {
           <p className="text-slate-500 leading-7 font-medium">
             DinoFocus transforms boring tasks into an exciting adventure with a
             gamified focus timer. Every minute you stay focused becomes energy
-            to nurture and evolve your pets. Beyond the fun, our professional
-            task management tools including specialized focus methods help you
-            organize your life with ease. Stay motivated, build your streaks,
-            and collect them all with a community of achievers.
+            to nurture and evolve your pets.
           </p>
         </div>
       </section>
